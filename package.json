@@ -1,0 +1,27 @@
+{
+  "name": "clontinder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanjot08/ElectivaII_ClonTinder_LastDance.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juanjot08/ElectivaII_ClonTinder_LastDance/issues"
+  },
+  "homepage": "https://github.com/juanjot08/ElectivaII_ClonTinder_LastDance#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
