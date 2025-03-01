@@ -21,6 +21,7 @@
   "homepage": "https://github.com/juanjot08/ElectivaII_ClonTinder_LastDance#readme",
   "dependencies": {
     "express": "^4.21.2",
+    "express-validator": "^7.2.1",
     "open": "^10.1.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
