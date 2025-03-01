@@ -1,4 +1,5 @@
 import express from 'express';
+import { userValidation, isValid } from '../validators/users.validator.js';
 
 const router = express.Router();
 
@@ -52,7 +53,9 @@ const router = express.Router();
  *         description: Internal server error.
  */
 
-router.get("/available", (req, res) => {
+router.get(
+    "/available",
+    (req, res) => {
     const { userId } = req.query;
 
     if (!userId) {
@@ -108,7 +111,10 @@ router.get("/available", (req, res) => {
  *       500:
  *         description: Internal server error.
  */
-router.get('/:userId', (req, res) => {
+router.get('/:userId', 
+    userValidation.GetUserRequest,
+    isValid,
+    (req, res) => {
     const { userId } = req.params;
     // Simulación de datos
     const user = {
