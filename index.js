@@ -6,6 +6,7 @@ import match from './presentation/routes/match.js'
 import swipes from './presentation/routes/swipes.js'
 import auth from './presentation/routes/auth.js';
 import messages from './presentation/routes/messages.js';
+import open from 'open';
 
 const app = express();
 const port = 3000;
@@ -52,4 +53,5 @@ app.use('/api/messages', messages);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
+    open(`http://localhost:${port}/api-docs`);
 });
