@@ -4,7 +4,8 @@ import swaggerUi from 'swagger-ui-express';
 import users from './presentation/routes/users.js';
 import match from './presentation/routes/match.js'
 import swipes from './presentation/routes/swipes.js'
-import auth from './presentation/routes/auth.js'
+import auth from './presentation/routes/auth.js';
+import messages from './presentation/routes/messages.js';
 
 const app = express();
 const port = 3000;
@@ -45,6 +46,8 @@ app.use('/api/match', match);
 app.use('/api/swipes', swipes);
 
 app.use('/api/auth', auth);
+
+app.use('/api/messages', messages);
 
 
 app.listen(port, () => {
