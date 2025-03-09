@@ -1,4 +1,4 @@
-import { query, param, validationResult } from 'express-validator';
+import { param, validationResult } from 'express-validator';
 
 export const userValidation = {
     GetUserRequest: [

@@ -1,11 +1,11 @@
 import express from 'express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import users from './presentation/routes/users.js';
-import match from './presentation/routes/match.js'
-import swipes from './presentation/routes/swipes.js'
-import auth from './presentation/routes/auth.js';
-import messages from './presentation/routes/messages.js';
+import users from './src/presentation/routes/users.js';
+import match from './src/presentation/routes/match.js'
+import swipes from './src/presentation/routes/swipes.js'
+import auth from './src/presentation/routes/auth.js';
+import messages from './src/presentation/routes/messages.js';
 import open from 'open';
 
 const app = express();
@@ -33,7 +33,7 @@ const swaggerOptions = {
         }
     },
     apis: [
-        "./presentation/routes/*.js"
+        "./src/presentation/routes/*.js"
     ]
 };
 
