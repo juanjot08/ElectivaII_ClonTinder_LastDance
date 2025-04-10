@@ -1,4 +1,6 @@
 import { param, validationResult } from 'express-validator';
+import { Request, Response } from 'express';
+
 
 export const userValidation = {
     GetUserRequest: [
@@ -11,7 +13,7 @@ export const userValidation = {
 }
 
 
-export const isValid = (req, res, next) => {
+export const isValid = (req: Request, res: Response, next: any) => {
 
     const result = validationResult(req);
 
