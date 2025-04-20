@@ -10,6 +10,7 @@ export const TYPES = {
     MatchController: Symbol.for('MatchController'),
 
     IUserService: Symbol.for('IUserService'),
+    IAuthService: Symbol.for('IAuthService'),
 
     IUserRepository: Symbol.for('IUserRepository'),
     MongooseConfig: Symbol.for('MongooseConfig'),

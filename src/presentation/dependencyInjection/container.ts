@@ -13,6 +13,8 @@ import { UsersService } from "../../application/services/users.service";
 import { IUsersRepository } from "../../application/interfaces/infrastructure/users.repository.interface";
 import { UsersRepository } from "../../infrastructure/mongo/repositories/users.repository";
 import { MongooseConfig } from "../../infrastructure/mongo/mongo.config";
+import { IAuthService } from "../../application/interfaces/services/auth.service.interface";
+import { AuthService } from "../../application/services/auth.service";
 
 // Infrastructure
 container.register<MongooseConfig>(TYPES.MongooseConfig, { useClass: MongooseConfig }, { lifecycle: Lifecycle.Singleton });
@@ -20,6 +22,7 @@ container.register<IUsersRepository>(TYPES.IUserRepository, { useClass: UsersRep
 
 // Application
 container.register<IUsersService>(TYPES.IUserService, { useClass: UsersService });
+container.register<IAuthService>(TYPES.IAuthService, { useClass: AuthService });
 
 // Presentation
 container.register<UserRouter>(TYPES.UserRouter, { useClass: UserRouter });
@@ -31,7 +34,5 @@ container.register<UserController>(TYPES.UserController, { useClass: UserControl
 container.register<MessagesController>(TYPES.MessagesController, { useClass: MessagesController });
 container.register<SwipesController>(TYPES.SwipesController, { useClass: SwipesController });
 container.register<MatchController>(TYPES.MatchController, { useClass: MatchController });
-
-
 
 export default container;
