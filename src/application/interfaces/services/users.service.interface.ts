@@ -1,11 +1,16 @@
+import { Result } from "ts-results-es";
 import { User } from "../../../domain/entities/user";
-import { UpdateUserDTO } from "../../../presentation/tinder-api/dtos/updateuser.dto";
+import { UpdateUserDTO } from "../dtos/users/serviceRequest/updateuser.dto";
+import { IUserResponseDTO } from "../dtos/users/serviceResponse/user.response";
 
 export interface IUsersService {
-    getUser(id: Number): Promise<User | null>
-    postUser(user: User): Promise<User | null>
-    updateUser(id:Number, userUpdateDto: UpdateUserDTO): Promise<User | null>
-    deleteUser(id: Number): Promise<Boolean>
-    getUsers(): Promise<User[]>
+    getUser(id: bigint): Promise<Result<IUserResponseDTO, string>>;
 
+    postUser(user: User): Promise<IUserResponseDTO | null>;
+    
+		updateUser(id: bigint, userUpdateDto: UpdateUserDTO): Promise<Result<IUserResponseDTO, string>>;
+		
+		createInitialProfile(idenityId: bigint): Promise<Result<IUserResponseDTO, string>>;
+
+		getUserByIdentityId(identityId: bigint): Promise<Result<User, string>>;
 }

@@ -3,29 +3,55 @@ import { User } from "../../domain/entities/user";
 import { IUsersService } from "../interfaces/services/users.service.interface";
 import { TYPES } from "../dependencyInjection/container.types";
 import { IUsersRepository } from "../interfaces/infrastructure/users.repository.interface";
-import { UpdateUserDTO } from "../../presentation/tinder-api/dtos/updateuser.dto";
+import { UpdateUserDTO } from "../interfaces/dtos/users/serviceRequest/updateuser.dto";
+import { Result, Ok, Err } from "ts-results-es";
+import { IUserResponseDTO } from "../interfaces/dtos/users/serviceResponse/user.response";
 
 @injectable()
 export class UsersService implements IUsersService {
 
-    constructor(@inject(TYPES.IUserRepository) private _usersRepository: IUsersRepository) { }
-    
-    public async postUser(user: User): Promise<User | null> {
-        return await this._usersRepository.postUser(user);
-    }
-    public async updateUser(id: Number, updateUserDto: UpdateUserDTO): Promise<User | null> {
-        return await this._usersRepository.updateUser(id, updateUserDto);
-    }
-    public async deleteUser(id: Number): Promise<Boolean> {
-        return await this._usersRepository.deleteUser(id);
-    }
-    public async getUsers(): Promise<User[]> {
-        return await this._usersRepository.getUsers();
-    }
+	constructor(@inject(TYPES.IUserRepository) private _usersRepository: IUsersRepository) { }
 
-    public async getUser(id: Number): Promise<User | null> {
-        return await this._usersRepository.getUser(id);
-    }
+	public async createInitialProfile(identityId: bigint): Promise<Result<IUserResponseDTO, string>> {
+		const user = new User(identityId);
 
-    
+		await this._usersRepository.createUser(user);
+
+		return Ok(new IUserResponseDTO(user));
+	}
+
+	public async postUser(user: User): Promise<IUserResponseDTO | null> {
+		return await this._usersRepository.createUser(user);
+	}
+
+	public async updateUser(id: bigint, updateUserDto: UpdateUserDTO): Promise<Result<IUserResponseDTO, string>> {
+
+		const user = await this._usersRepository.updateUser(id, updateUserDto);
+
+		if (user == null) {
+			return Err("User not found");
+		}
+
+		return Ok(new IUserResponseDTO(user));
+	}
+
+	public async getUser(id: bigint): Promise<Result<IUserResponseDTO, string>> {
+		const user = await this._usersRepository.getUser(id);
+
+		if (user == null) {
+			return Err("User not found");
+		}
+
+		return Ok(new IUserResponseDTO(user));
+	}
+
+	public async getUserByIdentityId(identityId: bigint): Promise<Result<User, string>> {
+		const user = await this._usersRepository.getUserByIdentityId(identityId);
+
+		if (user == null) {
+			return Err("User not found");
+		}
+
+		return Ok(user);
+	}
 }
