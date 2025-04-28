@@ -4,37 +4,38 @@ import { IAuthService } from "../../../application/interfaces/services/auth.serv
 import { Request, Response } from "express";
 import { ICreateIdentityUserRequestDTO } from "../../../application/interfaces/dtos/identity/serviceRequest/createIdentityUser.request";
 import { ILoginRequestDTO } from "../../../application/interfaces/dtos/identity/serviceRequest/login.request";
+import { sendSuccess } from "./base/success.response.handler";
+import { StatusCodes } from "http-status-codes";
+import { AlreadyExistsError, UnauthorizedError } from "./base/api.hanldlederror";
 
 @injectable()
 export class AuthController {
 
-    constructor(@inject(TYPES.IAuthService) private _authService: IAuthService) { }
+	constructor(@inject(TYPES.IAuthService) private _authService: IAuthService) { }
 
-    public async registerUser(req: Request, res: Response): Promise<void> {
-        const parsedRequest = req.body as ICreateIdentityUserRequestDTO;
+	public async registerUser(req: Request, res: Response): Promise<void> {
+		const parsedRequest = req.body as ICreateIdentityUserRequestDTO;
 
-				parsedRequest.authProvider = 'PasswordEmail';
+		parsedRequest.authProvider = 'PasswordEmail';
 
-				const response = await this._authService.createIdentityUser(parsedRequest);
+		const response = await this._authService.createIdentityUser(parsedRequest);
 
-				if (response.isErr()) {
-						res.status(400).json({ error: response.error });
-						return;
-				}
+		if (response.isErr()) {
+			throw new AlreadyExistsError(response.error);
+		}
 
-        res.status(201).json({ message: response.value });
-    }
+		sendSuccess(res, StatusCodes.CREATED, null, response.value);
+	}
 
-    public async loginUser(req: Request, res: Response): Promise<void> {
-        const parsedRequest = req.body as ILoginRequestDTO;
+	public async loginUser(req: Request, res: Response): Promise<void> {
+		const parsedRequest = req.body as ILoginRequestDTO;
 
-				const response = await this._authService.validateIdentityUser(parsedRequest);
+		const response = await this._authService.validateIdentityUser(parsedRequest);
 
-				if (response.isErr()) {
-						res.status(400).json({ error: response.error });
-						return;
-				}
+		if (response.isErr()) {
+			throw new UnauthorizedError(response.error);
+		}
 
-        res.status(200).json({ token: response.value.token });
-    }
+		sendSuccess(res, StatusCodes.OK, {token: response.value.token});
+	}
 }
