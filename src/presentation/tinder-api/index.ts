@@ -12,6 +12,7 @@ import { AuthRouter } from './routes/auth.router';
 import { MessagesRouter } from './routes/messages.router';
 import { InfrastructureDependencyInjection } from '../../infrastructure/dependencyInjection/infrastructure.dependencyInjection'
 import { Id } from "../../domain/valueObjects/id";
+import { errorHandler } from "./middlewares/error.handler.middleware";
 
 const app = express();
 const port = 3000;
@@ -85,6 +86,9 @@ app.use('/api/auth', authRouter.router);
 
 const messagesRouter = container.resolve<MessagesRouter>(TYPES.MessagesRouter)
 app.use('/api/messages', messagesRouter.router);
+
+
+app.use(errorHandler);
 
 app.listen(port, () => {
 	console.log(`Server listening on port ${port}`);
