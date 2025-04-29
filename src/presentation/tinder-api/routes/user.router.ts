@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { userValidation, isValid } from '../validators/users.validator';
+import { userValidation } from '../validators/users.validator';
 import { inject, injectable } from 'tsyringe';
 import UserController from '../controllers/users.controller';
 import { TYPES } from '../../../application/dependencyInjection/container.types';
 import AuthMiddleware from '../middlewares/auth.middleware';
+import { isValid } from '../middlewares/validation.middleware';
 
 @injectable()
 export class UserRouter {
@@ -164,5 +165,38 @@ export class UserRouter {
             isValid,
             this.userController.updateUserProfile.bind(this.userController)
         );
+
+				/**
+				 * @swagger
+				 * /users/profile/photo:
+				 *   patch:
+				 *     summary: Update user profile photo
+				 *     description: Updates the profile photo of the authenticated user.
+				 *     tags:
+				 *       - Users
+				 *     requestBody:
+				 *       required: true
+				 *       content:
+				 *         multipart/form-data:
+				 *           schema:
+				 *             type: object
+				 *             properties:
+				 *               profilePhoto:
+				 *                 type: string
+				 *                 format: binary
+				 *                 description: The new profile photo file.
+				 *     responses:
+				 *       200:
+				 *         description: Profile photo updated successfully.
+				 *       400:
+				 *         description: Bad request. Invalid input data.
+				 *       500:
+				 *         description: Internal server error.
+				 */
+				this.router.patch(
+						"/profile/photo", 
+						this.authMiddleware.authenticateToken,
+						this.userController.updateProfilePhoto.bind(this.userController)
+				);
     }
 }
