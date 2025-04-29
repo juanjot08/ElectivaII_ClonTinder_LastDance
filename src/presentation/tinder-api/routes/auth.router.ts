@@ -3,6 +3,8 @@ import { Router } from 'express';
 import { inject, injectable } from 'tsyringe';
 import { TYPES } from '../../../application/dependencyInjection/container.types';
 import { AuthController } from '../controllers/auth.controller';
+import { authValidation } from '../validators/auth.validator';
+import { isValid } from '../middlewares/validation.middleware';
 
 @injectable()
 export class AuthRouter {
@@ -65,7 +67,7 @@ export class AuthRouter {
      *       500:
      *         description: Internal server error.
      */
-    this.router.post('/register', this._authController.registerUser.bind(this._authController));
+    this.router.post('/register', authValidation.RegisterRequest, isValid, this._authController.registerUser.bind(this._authController));
 
     /**
      * @swagger
@@ -103,6 +105,6 @@ export class AuthRouter {
      *                   type: string
      *                   example: JWT-TOKEN
      */
-    this.router.post('/login', this._authController.loginUser.bind(this._authController));
+    this.router.post('/login', authValidation.LoginRequest, isValid, this._authController.loginUser.bind(this._authController));
   }
 }
