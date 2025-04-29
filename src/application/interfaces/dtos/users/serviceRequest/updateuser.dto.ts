@@ -7,7 +7,6 @@ export class UpdateUserDTO {
 	gender?: string | null;
 	preferences?: Preferences | null;
 	location?: Location | null;
-	profilePhoto?: string | null;
 
 	constructor(data: Partial<UpdateUserDTO>) {
 		const allowedFields: (keyof UpdateUserDTO)[] = [
@@ -16,7 +15,6 @@ export class UpdateUserDTO {
 			'gender',
 			'preferences',
 			'location',
-			'profilePhoto',
 		];
 
 		for (const key of allowedFields) {
@@ -35,9 +33,6 @@ export class UpdateUserDTO {
 					break;
 				case "location":
 					if (data.location != undefined) this.location = data.location
-					break;
-				case "profilePhoto":
-					if (data.profilePhoto != undefined) this.profilePhoto = data.profilePhoto
 					break;
 			}
 		}

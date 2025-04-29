@@ -1,7 +1,4 @@
-import { body, param, validationResult } from 'express-validator';
-import { Request, Response } from 'express';
-import { BadRequestError } from '../controllers/base/api.hanldlederror';
-
+import { body, param } from 'express-validator';
 
 export const userValidation = {
 	GetUserRequest: [
@@ -74,20 +71,5 @@ export const userValidation = {
 			.isNumeric()
 			.withMessage("The field must be a number")
 			.escape()
-	],
-}
-
-
-export const isValid = (req: Request, res: Response, next: any) => {
-
-	const result = validationResult(req);
-
-	if (!result.isEmpty()) {
-		throw new BadRequestError("Validation error", result.array());
-		
-	} else {
-
-		next();
-	}
-
+	]
 }

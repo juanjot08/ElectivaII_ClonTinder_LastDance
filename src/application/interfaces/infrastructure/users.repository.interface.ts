@@ -8,7 +8,7 @@ export interface IUsersRepository {
     
 		createUser(user: User): Promise<User | null>;
     
-		updateUser(id: bigint, updateUserDto: UpdateUserDTO): Promise<User | null>;
+		updateUser(id: bigint, updateUserDto: any): Promise<User | null>;
     
 		deleteUser(id: bigint): Promise<boolean>;
     
