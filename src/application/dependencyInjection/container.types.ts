@@ -18,5 +18,8 @@ export const TYPES = {
 
     IUserRepository: Symbol.for('IUserRepository'),
 		IIdentityRepository: Symbol.for('IIdentityRepository'),
+		IUserImagesRepository: Symbol.for('IUserImagesRepository'),
     MongooseConfig: Symbol.for('MongooseConfig'),
+		BlobStorageConnectionString: Symbol.for('BlobStorageConnectionString'),
+		BlobStorageClient: Symbol.for('BlobStorageClient'),
 };

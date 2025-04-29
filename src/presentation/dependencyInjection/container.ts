@@ -20,11 +20,23 @@ import { AuthRouter } from "../tinder-api/routes/auth.router";
 import { AuthController } from "../tinder-api/controllers/auth.controller";
 import { IIdentityRepository } from "../../application/interfaces/infrastructure/identity.repository.interface";
 import { IdentityRepository } from "../../infrastructure/mongo/repositories/identity.repository";
+import { IUserImagesRepository } from "../../application/interfaces/infrastructure/user.images.repository";
+import { UserImagesRepository } from "../../infrastructure/blobstorage/users/user.images.repository";
+import appsettings from '../../appsettings.json';
+import { AzureBlobStorageAdapter } from "../../infrastructure/blobstorage/common/azureblobstorage.adapter";
+
 
 // Infrastructure
 container.register<MongooseConfig>(TYPES.MongooseConfig, { useClass: MongooseConfig }, { lifecycle: Lifecycle.Singleton });
+container.register(TYPES.BlobStorageConnectionString, { useValue: appsettings.blobStorage.connectionString });
+
+container.register<AzureBlobStorageAdapter>(TYPES.BlobStorageClient,
+	{ useClass: AzureBlobStorageAdapter },
+	{ lifecycle: Lifecycle.Singleton });
+
 container.register<IUsersRepository>(TYPES.IUserRepository, { useClass: UsersRepository });
 container.register<IIdentityRepository>(TYPES.IIdentityRepository, { useClass: IdentityRepository });
+container.register<IUserImagesRepository>(TYPES.IUserImagesRepository, { useClass: UserImagesRepository });
 
 // Application
 container.register<IUsersService>(TYPES.IUserService, { useClass: UsersService });
