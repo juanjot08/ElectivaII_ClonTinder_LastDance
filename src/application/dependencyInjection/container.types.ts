@@ -15,9 +15,13 @@ export const TYPES = {
 
     IUserService: Symbol.for('IUserService'),
     IAuthService: Symbol.for('IAuthService'),
+		ISwipeService: Symbol.for('ISwipeService'),
+		IMatchService: Symbol.for('IMatchService'),
 
     IUserRepository: Symbol.for('IUserRepository'),
 		IIdentityRepository: Symbol.for('IIdentityRepository'),
+		ISwipeRepository: Symbol.for('ISwipeRepository'),
+		IMatchRepository: Symbol.for('IMatchRepository'),
 		IUserImagesRepository: Symbol.for('IUserImagesRepository'),
     MongooseConfig: Symbol.for('MongooseConfig'),
 		BlobStorageConnectionString: Symbol.for('BlobStorageConnectionString'),

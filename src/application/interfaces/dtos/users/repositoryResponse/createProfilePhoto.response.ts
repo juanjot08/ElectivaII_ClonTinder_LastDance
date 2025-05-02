@@ -1,4 +1,4 @@
-export interface IUserProfilePhotoRepositoryResponse {
+export interface IUsePhotoRepositoryResponse {
 	blobName: string;
 	url: string;
 };

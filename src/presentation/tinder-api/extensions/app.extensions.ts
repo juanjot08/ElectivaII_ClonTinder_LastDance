@@ -25,7 +25,7 @@ export class AppExtensions {
 		app.use('/api/users', userRouter.router);
 
 		const matchRouter = container.resolve<MatchRouter>(TYPES.MatchRouter)
-		app.use('/api/match', matchRouter.router);
+		app.use('/api/matches', matchRouter.router);
 
 		const swipesRouter = container.resolve<SwipesRouter>(TYPES.SwipesRouter);
 		app.use('/api/swipes', swipesRouter.router);

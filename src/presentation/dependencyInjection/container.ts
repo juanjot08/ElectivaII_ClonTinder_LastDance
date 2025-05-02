@@ -1,6 +1,7 @@
 import UserController from "../tinder-api/controllers/users.controller";
 import MessagesController from "../tinder-api/controllers/messages.controller";
 import AuthMiddleware from "../tinder-api/middlewares/auth.middleware";
+import appsettings from '../../appsettings.json';
 import { container, Lifecycle } from "tsyringe";
 import { TYPES } from "../../application/dependencyInjection/container.types";
 import { UserRouter } from "../tinder-api/routes/user.router";
@@ -22,8 +23,15 @@ import { IIdentityRepository } from "../../application/interfaces/infrastructure
 import { IdentityRepository } from "../../infrastructure/mongo/repositories/identity.repository";
 import { IUserImagesRepository } from "../../application/interfaces/infrastructure/user.images.repository";
 import { UserImagesRepository } from "../../infrastructure/blobstorage/users/user.images.repository";
-import appsettings from '../../appsettings.json';
 import { AzureBlobStorageAdapter } from "../../infrastructure/blobstorage/common/azureblobstorage.adapter";
+import { IMatchRepository } from "../../application/interfaces/infrastructure/match.repository.interface";
+import { MatchRepository } from "../../infrastructure/mongo/repositories/match.repository";
+import { ISwipeRepository } from "../../application/interfaces/infrastructure/swipe.repository.interface";
+import { SwipeRepository } from "../../infrastructure/mongo/repositories/swipe.repository";
+import { ISwipeService } from "../../application/interfaces/services/swipe.service.interface";
+import { SwipeService } from "../../application/services/swipe.service";
+import { IMatchService } from "../../application/interfaces/services/match.service.interface";
+import { MatchService } from "../../application/services/match.service";
 
 
 // Infrastructure
@@ -36,10 +44,15 @@ container.register<AzureBlobStorageAdapter>(TYPES.BlobStorageClient,
 
 container.register<IUsersRepository>(TYPES.IUserRepository, { useClass: UsersRepository });
 container.register<IIdentityRepository>(TYPES.IIdentityRepository, { useClass: IdentityRepository });
+container.register<IMatchRepository>(TYPES.IMatchRepository, { useClass: MatchRepository });
+container.register<ISwipeRepository>(TYPES.ISwipeRepository, { useClass: SwipeRepository });
 container.register<IUserImagesRepository>(TYPES.IUserImagesRepository, { useClass: UserImagesRepository });
 
 // Application
 container.register<IUsersService>(TYPES.IUserService, { useClass: UsersService });
+container.register<IAuthService>(TYPES.IAuthService, { useClass: AuthService });
+container.register<ISwipeService>(TYPES.ISwipeService, { useClass: SwipeService });
+container.register<IMatchService>(TYPES.IMatchService, { useClass: MatchService });
 
 // Presentation
 container.register<UserRouter>(TYPES.UserRouter, { useClass: UserRouter });
@@ -55,6 +68,5 @@ container.register<MatchController>(TYPES.MatchController, { useClass: MatchCont
 container.register<AuthController>(TYPES.AuthController, { useClass: AuthController });
 
 container.register<AuthMiddleware>(TYPES.AuthMiddleware, { useClass: AuthMiddleware });
-container.register<IAuthService>(TYPES.IAuthService, { useClass: AuthService });
 
 export default container;

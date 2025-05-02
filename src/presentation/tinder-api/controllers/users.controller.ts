@@ -7,6 +7,7 @@ import { BadRequestError, NotFoundError } from './base/api.hanldlederror';
 import { sendSuccess } from './base/success.response.handler';
 import { StatusCodes } from 'http-status-codes';
 import multer from 'multer';
+import appSettings from '../../../appsettings.json';
 
 @injectable()
 class UserController {
@@ -38,6 +39,20 @@ class UserController {
 		sendSuccess(res, StatusCodes.OK, userResponse.value);
 	}
 
+	public async getPotentialMatches(req: Request, res: Response): Promise<void> {
+		const { userId } = req.params;
+		const { lastId } = req.query;
+		
+		const parsedLastId = lastId ? BigInt(lastId as string) : undefined;
+
+		const potentialMatches = await this._usersService.getPotentialMatches(BigInt(userId), parsedLastId);
+
+		if (potentialMatches.isErr()) {
+			throw new BadRequestError(potentialMatches.error);
+		}
+
+		sendSuccess(res, StatusCodes.OK, potentialMatches.value);
+	}
 
 	private uploadProfilePhotoHandler = multer({ storage: multer.memoryStorage() }).single('profilePhoto');
 
@@ -65,6 +80,33 @@ class UserController {
 			sendSuccess(res, StatusCodes.OK, null, result.value);
 		});
 
+	}
+
+	private uploadAdditionalProfilePhotosHandler = multer({ storage: multer.memoryStorage() })
+																								.array('additionalProfilePhotos', appSettings.businessRules.maxAdditionalProfilePhotos);
+
+	public async updateAdditionalProfilePhotos(req: Request, res: Response): Promise<void> {
+		this.uploadAdditionalProfilePhotosHandler(req, res, async (err) => {
+
+			if (err) {
+				throw new BadRequestError('Error uploading file');
+			}
+
+			const { userId } = req.params;
+			const files = req.files as Express.Multer.File[];
+
+			if (!files || files.length === 0) {
+				throw new BadRequestError('No file uploaded');
+			}
+
+			const result = await this._usersService.updateAdditionalProfilePhotos(BigInt(userId), files);
+
+			if (result.isErr()) {
+				throw new NotFoundError(result.error);
+			}
+
+			sendSuccess(res, StatusCodes.OK, null, result.value);
+		});
 	}
 }
 

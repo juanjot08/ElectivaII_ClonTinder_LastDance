@@ -1,7 +1,8 @@
 import { Result } from "ts-results-es";
-import { IUserProfilePhotoRepositoryResponse } from "../dtos/users/repositoryResponse/createProfilePhoto.response";
+import { IUsePhotoRepositoryResponse } from "../dtos/users/repositoryResponse/createProfilePhoto.response";
 
 export interface IUserImagesRepository {
-	createProfilePhoto(userId: bigint, file: Express.Multer.File): Promise<Result<IUserProfilePhotoRepositoryResponse, string>>;
+	createProfilePhoto(userId: bigint, file: Express.Multer.File): Promise<Result<IUsePhotoRepositoryResponse, string>>;
+	createAdditionalProfilePhoto(userId: bigint, file: Express.Multer.File): Promise<Result<IUsePhotoRepositoryResponse, string>>;
 	getProfilePhoto(userId: bigint): Promise<Buffer | null>;
 }

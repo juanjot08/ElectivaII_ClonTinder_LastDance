@@ -10,7 +10,7 @@ export const userValidation = {
 	],
 	UserProfileRequest: [
 		body('name')
-			.notEmpty()
+			.optional()
 			.isString()
 			.withMessage("The field must be a string")
 			.isLength({ min: 7, max: 50 })
@@ -22,6 +22,11 @@ export const userValidation = {
 			.withMessage("The field must be a number")
 			.escape(),
 		body('gender')
+			.optional()
+			.isString()
+			.withMessage("The field must be a String")
+			.escape(),
+		body('bio')
 			.optional()
 			.isString()
 			.withMessage("The field must be a String")

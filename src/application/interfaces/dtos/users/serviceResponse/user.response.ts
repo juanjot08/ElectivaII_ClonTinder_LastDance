@@ -15,6 +15,10 @@ export class IUserResponseDTO {
 	
 		profilePhoto?: String;
 
+		additionalPhotos?: String[];
+
+		bio?: String;
+
 		constructor(user: User) {
 			this.name = user.name;
 			this.age = user.age;
@@ -22,5 +26,7 @@ export class IUserResponseDTO {
 			this.preferences = user.preferences;
 			this.location = user.location;
 			this.profilePhoto = user.profilePhoto;
+			this.additionalPhotos = user.additionalPhotos;
+			this.bio = user.bio;
 		}
 }

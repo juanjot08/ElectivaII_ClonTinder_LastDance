@@ -39,6 +39,8 @@ export interface IUser extends Document {
   preferences?: any;
   location?: ILocation;
   profilePhoto?: string;
+	bio?: string;
+	additionalPhotos?: string[];
 }
 
 export const UserSchema: Schema = new Schema({
@@ -50,6 +52,8 @@ export const UserSchema: Schema = new Schema({
   preferences: { type: PreferencesSchema, required: false, default: null }, 
   location: { type: LocationSchema, required: false, default: null }, 
   profilePhoto: { type: String, required: false, default: null },
+	bio: { type: String, required: false, default: null },
+	additionalPhotos: { type: [String], required: false, default: null },
 }, {
 	versionKey: false
 });

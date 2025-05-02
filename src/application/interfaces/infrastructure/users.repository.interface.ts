@@ -1,4 +1,5 @@
 import { User } from "../../../domain/entities/user";
+import { FindPotentialMatchesResult } from "../dtos/users/repositoryResponse/potentialMatches.response";
 import { UpdateUserDTO } from "../dtos/users/serviceRequest/updateuser.dto";
 
 export interface IUsersRepository {
@@ -13,4 +14,6 @@ export interface IUsersRepository {
 		deleteUser(id: bigint): Promise<boolean>;
     
 		getUsers(): Promise<User[]>;
+
+		getPotentialMatches(user: User, excludedIds: bigint[], limit: number, lastId?: bigint): Promise<FindPotentialMatchesResult>;
 }

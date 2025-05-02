@@ -7,6 +7,9 @@ import { UpdateUserDTO } from "../interfaces/dtos/users/serviceRequest/updateuse
 import { Result, Ok, Err } from "ts-results-es";
 import { IUserResponseDTO } from "../interfaces/dtos/users/serviceResponse/user.response";
 import { IUserImagesRepository } from "../interfaces/infrastructure/user.images.repository";
+import { FindPotentialMatchesResult } from "../interfaces/dtos/users/repositoryResponse/potentialMatches.response";
+import { ISwipeService } from "../interfaces/services/swipe.service.interface";
+import appsettings from "../../appsettings.json";
 
 @injectable()
 export class UsersService implements IUsersService {
@@ -14,6 +17,7 @@ export class UsersService implements IUsersService {
 	constructor(
 		@inject(TYPES.IUserRepository) private _usersRepository: IUsersRepository,
 		@inject(TYPES.IUserImagesRepository) private _userPhotosRepository: IUserImagesRepository,
+		@inject(TYPES.ISwipeService) private _swipeService: ISwipeService,
 	) { }
 
 	public async createInitialProfile(identityId: bigint): Promise<Result<IUserResponseDTO, string>> {
@@ -42,6 +46,33 @@ export class UsersService implements IUsersService {
 		return Ok("Profile photo uploaded successfully");
 	}
 
+	public async updateAdditionalProfilePhotos(userId: bigint, files: Express.Multer.File[]): Promise<Result<string, string>> {
+		
+		const user = await this._usersRepository.getUser(userId);
+
+		if (user == null) {
+			return Err("User not found");
+		}
+
+		const imagesUrls: string[] = [];
+
+		for (const file of files) {
+			const uploadedResponse = await this._userPhotosRepository.createAdditionalProfilePhoto(userId, file);
+
+			if (uploadedResponse.isErr()) {
+				return Err(uploadedResponse.error);
+			}
+
+			imagesUrls.push(uploadedResponse.value.url);
+
+		}
+
+		await this._usersRepository.updateUser(userId, { additionalPhotos: imagesUrls });
+
+		return Ok("Additional profile photos uploaded successfully");
+
+	}
+
 	public async postUser(user: User): Promise<IUserResponseDTO | null> {
 		return await this._usersRepository.createUser(user);
 	}
@@ -65,6 +96,38 @@ export class UsersService implements IUsersService {
 		}
 
 		return Ok(new IUserResponseDTO(user));
+	}
+
+	public async getPotentialMatches(userId: bigint, lastId?: bigint): Promise<Result<FindPotentialMatchesResult, string>> {
+
+		const user = await this._usersRepository.getUser(userId);
+
+		if (user == null) {
+			return Err("User not found");
+		}
+
+		if (user.preferences == null) {
+			return Err("User preferences not set");
+		}
+
+		const swipedIds = await this._swipeService.getSwipeHistory(userId);
+
+		const excludedIds = [
+			...(swipedIds?.map((swipe) => swipe.targetUserId) || []),
+			userId
+		]
+
+		const potentialMatches = await this._usersRepository.getPotentialMatches(
+			user,
+			excludedIds,
+			appsettings.businessRules.limitForPotentialMatches,
+			lastId);
+
+		if (potentialMatches.users == null) {
+			return Err("No potential matches found, adjust your preferences.");
+		}
+
+		return Ok(potentialMatches);
 	}
 
 	public async getUserByIdentityId(identityId: bigint): Promise<Result<User, string>> {
