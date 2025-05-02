@@ -228,13 +228,20 @@
 		"z-schema": "^5.0.5"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.27.1",
+		"@babel/preset-env": "^7.27.1",
+		"@babel/preset-typescript": "^7.27.1",
 		"@types/bcrypt": "^5.0.2",
+		"@types/jest": "^29.5.14",
 		"@types/jsonwebtoken": "^9.0.9",
 		"@types/node": "^22.14.0",
 		"@types/swagger-jsdoc": "^6.0.4",
 		"@types/swagger-ui-express": "^4.1.8",
+		"babel-jest": "^29.7.0",
 		"concurrently": "^9.1.2",
+		"jest": "^29.7.0",
 		"nodemon": "^3.1.9",
+		"ts-jest": "^29.3.2",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3"
 	},
@@ -242,7 +249,10 @@
 		"build": "tsc",
 		"start-api": "ts-node src/presentation/tinder-api/index.ts",
 		"start-chat": "ts-node src/presentation/tinder-chat/index.ts",
-		"dev": "concurrently \"npm run start-api\" \"npm run start-chat\""
+		"dev": "concurrently \"npm run start-api\" \"npm run start-chat\"",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:cov": "jest --coverage"
 	},
 	"repository": {
 		"type": "git",

@@ -48,22 +48,4 @@ export class User {
 
 	public additionalPhotos?: String[];
 
-	public static new(identityId: bigint): User {
-		return new User(identityId);
-	}
-
-	public static existent(
-		identityId: bigint,
-		id: bigint,
-		name?: string,
-		age?: number,
-		gender?: string,
-		preferences?: Preferences,
-		location?: Location,
-		profilePhoto?: string,
-		bio?: string,
-		aditionalPhotos?: string[]
-	): User {
-		return new User(identityId, id, name, age, gender, preferences, location, profilePhoto, bio, aditionalPhotos);
-	}
 }
