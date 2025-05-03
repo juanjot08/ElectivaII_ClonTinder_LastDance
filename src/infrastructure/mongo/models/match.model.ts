@@ -11,7 +11,7 @@ export const MatchSchema = new Schema<IMatch>({
   id: {
     type: BigInt, 
     required: true,
-    unique: true,
+		unique: false
   },
   userId: {
     type: BigInt, 

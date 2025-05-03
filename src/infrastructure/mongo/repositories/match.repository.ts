@@ -10,9 +10,19 @@ import { IMatch, MatchSchema } from "../models/match.model";
 export class MatchRepository implements IMatchRepository {
   private readonly _matchModel: Model<IMatch>;
 
-  constructor(@inject(TYPES.MongooseConfig) private _dbContext: MongooseConfig) {
+  constructor(@inject(TYPES.MongooseConfig) _dbContext: MongooseConfig) {
     this._matchModel = _dbContext.connection.model<IMatch>("Matches", MatchSchema, "Matches");
   }
+	
+	public async getMatch(userId: bigint, targetUserId: bigint): Promise<Match | null> {
+		const match = await this._matchModel.findOne({ userId, targetUserId });
+
+		if (match == null) {
+			return null;
+		}
+
+		return this.toEntity(match);
+	}
 
   public async recordMatch(match: Match): Promise<void> {
     await this._matchModel.create(match);
