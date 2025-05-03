@@ -67,14 +67,18 @@ export class UsersRepository implements IUsersRepository {
 
 		const query: FilterQuery<any> = {
 			id: { $nin: excludedIds },
-			gender: user.preferences?.interestedInGender,
-			age: {
-				$gte: user.preferences?.minAge,
-				$lte: user.preferences?.maxAge
-			},
-			"preferences.interestedInGender": user.gender,
-			"preferences.minAge": { $gte: user.age },
-			"preferences.maxAge": { $lte: user.age },
+			$and: [
+				{ gender: user.preferences?.interestedInGender },
+				{
+					age: {
+						$gte: user.preferences?.minAge,
+						$lte: user.preferences?.maxAge
+					}
+				},
+				{ "preferences.interestedInGender": user.gender },
+				{ "preferences.minAge": { $lte: user.age } },
+				{ "preferences.maxAge": { $gte: user.age } },
+			],
 		};
 
 		if (lastId !== undefined) {
