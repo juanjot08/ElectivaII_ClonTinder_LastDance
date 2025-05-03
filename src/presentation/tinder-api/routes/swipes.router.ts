@@ -105,13 +105,6 @@ export class SwipesRouter {
 		 *     description: Retrieves the swipe history of a user.
 		 *     tags:
 		 *       - Swipes
-		 *     parameters:
-		 *       - in: query
-		 *         name: userId
-		 *         required: true
-		 *         schema:
-		 *           type: string
-		 *         description: The ID of the user whose swipe history is being retrieved.
 		 *     responses:
 		 *       200:
 		 *         description: Swipe history retrieved successfully.
