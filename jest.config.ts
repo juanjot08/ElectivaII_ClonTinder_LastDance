@@ -16,7 +16,13 @@ const config: Config = {
 	transform: {
 		'^.+\\.tsx?$': 'ts-jest',
 	},
-	collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/infrastructure/**', '!src/presentation/**'],
+	collectCoverageFrom: [
+		'src/**/*.ts', 
+		'!src/**/*.d.ts', 
+		'!src/infrastructure/**', 
+		'!src/presentation/**', 
+		'!src/application/dependencyInjection/**'
+	],
 	testPathIgnorePatterns: ['<rootDir>/dist/'],
 	coverageDirectory: 'coverage',
 };

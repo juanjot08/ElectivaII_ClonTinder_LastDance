@@ -14,7 +14,7 @@ export class UsersRepository implements IUsersRepository {
 
 	private readonly _userModel: Model<IUser>;
 
-	constructor(@inject(TYPES.MongooseConfig) private _dbContext: MongooseConfig) {
+	constructor(@inject(TYPES.MongooseConfig) _dbContext: MongooseConfig) {
 		this._userModel = _dbContext.connection.model<IUser>("Users", UserSchema, "Users");
 	}
 
@@ -71,7 +71,10 @@ export class UsersRepository implements IUsersRepository {
 			age: {
 				$gte: user.preferences?.minAge,
 				$lte: user.preferences?.maxAge
-			}
+			},
+			"preferences.interestedInGender": user.gender,
+			"preferences.minAge": { $gte: user.age },
+			"preferences.maxAge": { $lte: user.age },
 		};
 
 		if (lastId !== undefined) {

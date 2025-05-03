@@ -3,7 +3,6 @@ import { Model } from "mongoose";
 import { TYPES } from "../../../application/dependencyInjection/container.types";
 import { ISwipeRepository } from "../../../application/interfaces/infrastructure/swipe.repository.interface";
 import { Swipe } from "../../../domain/entities/swipe";
-import { SwipeAction } from "../../../domain/enumerables/swipeAction.enum";
 import { MongooseConfig } from "../mongo.config";
 import { ISwipe, SwipeSchema } from "../models/swipe.model";
 
@@ -11,7 +10,7 @@ import { ISwipe, SwipeSchema } from "../models/swipe.model";
 export class SwipeRepository implements ISwipeRepository {
   private readonly _swipeModel: Model<ISwipe>;
 
-  constructor(@inject(TYPES.MongooseConfig) private _dbContext: MongooseConfig) {
+  constructor(@inject(TYPES.MongooseConfig) _dbContext: MongooseConfig) {
     this._swipeModel = _dbContext.connection.model<ISwipe>("Swipes", SwipeSchema, "Swipes");
   }
 

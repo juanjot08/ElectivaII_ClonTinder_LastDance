@@ -10,7 +10,7 @@ import { IAuthIdentity, AuthIdentitySchema } from "../models/identity.model";
 export class IdentityRepository implements IIdentityRepository {
 	private readonly _identityModel: Model<IAuthIdentity>;
 
-	constructor(@inject(TYPES.MongooseConfig) private _dbContext: MongooseConfig) {
+	constructor(@inject(TYPES.MongooseConfig) _dbContext: MongooseConfig) {
 		this._identityModel = _dbContext.connection.model<IAuthIdentity>("Identity", AuthIdentitySchema, "Identity");
 	}
 
