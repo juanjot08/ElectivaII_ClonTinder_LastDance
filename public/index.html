@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Chat Demo</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			/* Para centrar el login en pantallas pequeñas */
+		}
+
+		/* Estilos para el Login */
+		#login {
+			background-color: #fff;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			width: 90%;
+			/* Hacer el login responsive en pantallas pequeñas */
+			max-width: 400px;
+			/* Ancho máximo para pantallas más grandes */
+		}
+
+		#login h2 {
+			text-align: center;
+			margin-bottom: 20px;
+			color: #ff5e3a;
+			/* Un color similar al de Tinder */
+		}
+
+		#login input[type="email"],
+		#login input[type="password"] {
+			width: calc(100% - 20px);
+			padding: 10px;
+			margin: 10px 0;
+			border: 1px solid #ccc;
+			border-radius: 25px;
+			/* Bordes más redondeados */
+			box-sizing: border-box;
+			font-size: 16px;
+		}
+
+		#login button {
+			width: 100%;
+			padding: 12px;
+			background-color: #ff5e3a;
+			/* Color principal de Tinder */
+			color: white;
+			border: none;
+			border-radius: 25px;
+			cursor: pointer;
+			font-size: 16px;
+			transition: background-color 0.3s ease;
+		}
+
+		#login button:hover {
+			background-color: #e64a19;
+		}
+
+		/* Estilos para el Chat */
+		#chat {
+			display: none;
+			flex-direction: column;
+			/* Cambiar a columna para el diseño responsive inicial */
+			width: 95%;
+			/* Hacer el chat responsive */
+			max-width: 900px;
+			background: #fff;
+			border-radius: 10px;
+			overflow: hidden;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			margin-top: 20px;
+			/* Espacio desde el login en pantallas pequeñas */
+			min-height: 500px;
+		}
+
+		/* Estilos para la lista de Matches (inicialmente arriba) */
+		#matches {
+			background: #f8f8f8;
+			border-bottom: 1px solid #ddd;
+			overflow-x: auto;
+			/* Permitir desplazamiento horizontal si hay muchos matches en pantallas pequeñas */
+			white-space: nowrap;
+			/* Evitar que los matches se envuelvan */
+			padding: 10px 0;
+		}
+
+		#matches h3 {
+			margin: 10px 15px;
+			color: #333;
+			font-size: 1.2em;
+		}
+
+		#matchesList {
+			list-style: none;
+			margin: 0;
+			padding: 0 10px;
+			display: flex;
+			/* Mostrar los matches en línea horizontalmente */
+			gap: 10px;
+			/* Espacio entre los items de match */
+		}
+
+		.match-item {
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 50px;
+			/* Hacerlos circulares */
+			padding: 10px 15px;
+			cursor: pointer;
+			transition: background-color 0.2s ease;
+			display: inline-block;
+			/* Para que el ancho se ajuste al contenido */
+		}
+
+		.match-item:hover {
+			background-color: #eee;
+		}
+
+		.match-item strong {
+			color: #333;
+		}
+
+		/* Estilos para el área de chat */
+		#chat-area {
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			padding: 15px;
+		}
+
+		#messages {
+			flex-grow: 1;
+			overflow-y: auto;
+			margin-bottom: 15px;
+			padding: 10px;
+			background: #f9f9f9;
+			border-radius: 10px;
+		}
+
+		.message {
+			background: #e0f7fa;
+			padding: 10px 15px;
+			border-radius: 20px;
+			/* Formas de burbuja */
+			margin: 8px 0;
+			max-width: 80%;
+			word-break: break-word;
+		}
+
+		.message.you {
+			align-self: flex-end;
+			background-color: #dcedc8;
+			/* Verde claro para tus mensajes */
+		}
+
+		.message.other {
+			align-self: flex-start;
+			background-color: #e0f7fa;
+			/* Azul claro para los mensajes del otro */
+		}
+
+		#chat-input {
+			display: flex;
+			gap: 10px;
+		}
+
+		#inputMessage {
+			flex-grow: 1;
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 25px;
+			font-size: 16px;
+		}
+
+		#sendMessageBtn {
+			padding: 10px 20px;
+			background-color: #ff5e3a;
+			/* Color principal de Tinder */
+			color: white;
+			border: none;
+			border-radius: 25px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+		#sendMessageBtn:disabled {
+			background-color: #ccc;
+			cursor: not-allowed;
+		}
+
+		/* Media query para pantallas más grandes (diseño de dos columnas) */
+		@media (min-width: 768px) {
+			body {
+				align-items: center;
+				/* Centrar el chat en pantallas más grandes */
+			}
+
+			#chat {
+				flex-direction: row;
+				/* Volver a la disposición de fila */
+				margin-top: 30px;
+			}
+
+			#matches {
+				width: 200px;
+				/* Ancho fijo para la lista de matches */
+				border-right: 1px solid #ddd;
+				border-bottom: none;
+				/* Quitar el borde inferior */
+				overflow-y: auto;
+				/* Permitir scroll vertical */
+				flex-direction: column;
+				/* Alinear los matches verticalmente */
+				white-space: normal;
+				/* Permitir que los nombres se envuelvan */
+				padding: 0;
+			}
+
+			#matches h3 {
+				padding: 15px;
+				border-bottom: 1px solid #eee;
+			}
+
+			#matchesList {
+				flex-direction: column;
+				/* Alinear los items verticalmente */
+				padding: 0;
+				gap: 0;
+				/* Quitar el espacio entre items */
+			}
+
+			.match-item {
+				display: block;
+				/* Hacer que ocupen todo el ancho */
+				border-radius: 0;
+				/* Quitar la forma circular */
+				border-bottom: 1px solid #eee;
+				border-right: none;
+				border-left: none;
+				padding: 12px 15px;
+			}
+
+			.match-item:last-child {
+				border-bottom: none;
+			}
+
+			#chat-area {
+				flex-grow: 1;
+				border-left: 1px solid #ddd;
+				/* Separador visual */
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div id="login">
+		<div class="login-box">
+			<h2>Tinder Chat</h2>
+			<input type="email" id="email" placeholder="Tu Email" required />
+			<input type="password" id="password" placeholder="Contraseña" required />
+			<button onclick="login()">Iniciar Sesión</button>
+		</div>
+	</div>
+
+	<div id="chat">
+		<div id="matches">
+			<h3>Matches</h3>
+			<ul id="matchesList"></ul>
+		</div>
+
+		<div id="chat-area">
+			<div id="messages"></div>
+			<div id="chat-input">
+				<input type="text" id="inputMessage" placeholder="Escribe un mensaje..." disabled />
+				<button id="sendMessageBtn" disabled onclick="sendMessage()">Enviar</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+	<script>
+		let socket = null;
+		let currentUserId = null;
+		let currentRoomId = null;
+
+		async function login() {
+			const email = document.getElementById("email").value;
+			const password = document.getElementById("password").value;
+
+			const res = await fetch("http://localhost:3000/api/auth/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
+
+			const response = await res.json();
+			if (!response.success) {
+				alert("Error al iniciar sesión");
+				return;
+			}
+
+			localStorage.setItem("token", response.data.token);
+			document.getElementById("login").style.display = "none";
+			document.getElementById("chat").style.display = "flex";
+
+			await loadMatches();
+			connectSocket()
+		}
+
+		async function loadMatches() {
+			const token = localStorage.getItem("token");
+
+			try {
+				const res = await fetch("http://localhost:3000/api/matches/history", {
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
+				});
+
+				const data = await res.json();
+				const matchesList = document.getElementById("matchesList");
+				matchesList.innerHTML = "";
+
+				if (!data.success || !data.data?.matches?.length) {
+					const li = document.createElement("li");
+					li.textContent = "No hay matches aún.";
+					matchesList.appendChild(li);
+					return;
+				}
+
+				data.data.matches.forEach(match => {
+					const li = document.createElement("li");
+					li.className = "match-item";
+					li.innerHTML = `<strong>${match.targetUserId}</strong>`;
+
+					li.addEventListener("click", () => {
+						const otherUserId = match.targetUserId;
+						joinChat(otherUserId);
+					});
+
+					matchesList.appendChild(li);
+				});
+			} catch (error) {
+				console.error("Error cargando matches:", error);
+				const li = document.createElement("li");
+				li.textContent = "Error al cargar matches.";
+				matchesList.appendChild(li);
+			}
+		}
+
+		async function loadMessages(matchId) {
+			const token = localStorage.getItem("token");
+
+			try {
+				const res = await fetch(`http://localhost:3000/api/messages/${matchId}`, {
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
+				});
+
+				const data = await res.json();
+
+				if (!data.success || !data.data?.length) {
+					return;
+				}
+
+				clearMessages();
+
+				// Muestra cada mensaje
+				data.data.forEach(msg => {
+					const sender = msg.senderId === currentUserId ? "Tú" : "Otro";
+					addMessage(sender, msg.content);
+				});
+
+			} catch (error) {
+				console.error("Error cargando mensajes:", error);
+			}
+		}
+
+		function connectSocket() {
+			const token = localStorage.getItem("token");
+
+			socket = io("localhost:4000", {
+				extraHeaders: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			socket.on("connect", () => {
+				console.log("Conectado al servidor");
+			});
+
+			socket.on("joined", async (payload) => {
+				currentRoomId = payload.roomId;
+				await loadMessages(currentRoomId);
+				addMessage("Sistema", `Unido a la sala: ${currentRoomId}`);
+				enableChatInput(true);
+			});
+
+			socket.on("receiveMessage", (data) => {
+				const sender = data.senderId === currentUserId ? "Tú" : "Otro";
+				addMessage(sender, data.content);
+			});
+		}
+
+		function joinChat(otherUserId) {
+			const token = localStorage.getItem("token");
+			const decoded = JSON.parse(atob(token.split(".")[1]));
+			currentUserId = decoded.userId;
+
+			socket.emit("joinChat", { otherUserId });
+		}
+
+		function sendMessage() {
+			const input = document.getElementById("inputMessage");
+			const message = input.value.trim();
+			if (!message || !currentRoomId) return;
+
+			const messageContent = {
+				chatId: currentRoomId,
+				content: message
+			};
+
+			socket.emit("sendMessage", messageContent);
+			addMessage("Tú", message);
+			input.value = "";
+		}
+
+		function addMessage(sender, message) {
+			const messagesDiv = document.getElementById("messages");
+			const msgEl = document.createElement("div");
+			msgEl.className = `message ${sender === 'Tú' ? 'you' : 'other'}`;
+			msgEl.innerHTML = `<strong>${sender}:</strong> ${message}`;
+			messagesDiv.appendChild(msgEl);
+			messagesDiv.scrollTop = messagesDiv.scrollHeight;
+		}
+
+		function enableChatInput(enabled) {
+			const input = document.getElementById("inputMessage");
+			const button = document.getElementById("sendMessageBtn");
+			input.disabled = !enabled;
+			button.disabled = !enabled;
+		}
+
+		function clearMessages() {
+			const messagesDiv = document.getElementById("messages");
+			messagesDiv.innerHTML = "";
+		}
+
+	</script>
+</body>
+
+</html>
