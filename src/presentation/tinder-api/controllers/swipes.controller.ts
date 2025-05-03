@@ -1,26 +1,36 @@
-import { injectable } from "tsyringe";
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
+import { inject, injectable } from "tsyringe";
+import { TYPES } from "../../../application/dependencyInjection/container.types";
+import { ISwipeService } from "../../../application/interfaces/services/swipe.service.interface";
+import { SwipeAction } from "../../../domain/enumerables/swipeAction.enum";
+import { BadRequestError, NotFoundError } from "./base/api.hanldlederror";
+import { sendSuccess } from "./base/success.response.handler";
+import { StatusCodes } from "http-status-codes";
 
 @injectable()
 export class SwipesController {
+	constructor(@inject(TYPES.ISwipeService) private _swipeService: ISwipeService) { }
 
-    public recordSwipe(req: Request, res: Response): void {
-        // Simulación de registro de un swipe
-        res.status(200).json({ message: 'Swipe recorded successfully' });
-    }
+	public async recordSwipe(req: Request, res: Response): Promise<void> {
+		const { targetUserId, swipeType } = req.body;
+		const { userId } = req.params;
 
-    public getSwipeHistory(req: Request, res: Response): void {
-        const { userId } = req.query;
+		const swipeAction = swipeType as SwipeAction;
 
-        if (!userId) {
-            return void res.status(400).json({ error: 'UserId is required' });
-        }
+		const result = await this._swipeService.recordSwipe(BigInt(userId), BigInt(targetUserId), swipeAction);
 
-        // Simulación de historial de swipes
-        const history = [
-            { userId: '67890', swipeType: 'like', timestamp: new Date().toISOString() },
-        ];
+		if (result.isErr()) {
+			throw new BadRequestError(result.error);
+		}
 
-        res.json(history);
-    }
+		sendSuccess(res, StatusCodes.OK, result.value);
+	}
+
+	public async getSwipeHistory(req: Request, res: Response): Promise<void> {
+		const { userId } = req.params;
+
+		const result = await this._swipeService.getSwipeHistory(BigInt(userId));
+
+		sendSuccess(res, StatusCodes.OK, { swipes: result });
+	}
 }

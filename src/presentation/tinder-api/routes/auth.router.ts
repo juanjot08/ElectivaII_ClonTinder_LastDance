@@ -1,10 +1,16 @@
 // src/routes/AuthRoutes.ts
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { inject, injectable } from 'tsyringe';
+import { TYPES } from '../../../application/dependencyInjection/container.types';
+import { AuthController } from '../controllers/auth.controller';
+import { authValidation } from '../validators/auth.validator';
+import { isValid } from '../middlewares/validation.middleware';
 
-class AuthRouter {
+@injectable()
+export class AuthRouter {
   public router: Router;
 
-  constructor() {
+  constructor(@inject(TYPES.AuthController) private _authController: AuthController) {
     this.router = Router();
     this.initializeRoutes();
   }
@@ -13,7 +19,7 @@ class AuthRouter {
 
     /**
      * @swagger
-     * /api/auth/register:
+     * /auth/register:
      *   post:
      *     summary: Create a new user
      *     description: Creates a new user with the provided email and password.
@@ -61,11 +67,11 @@ class AuthRouter {
      *       500:
      *         description: Internal server error.
      */
-    this.router.post('/register', this.registerUser);
+    this.router.post('/register', authValidation.RegisterRequest, isValid, this._authController.registerUser.bind(this._authController));
 
     /**
      * @swagger
-     * /api/auth/login:
+     * /auth/login:
      *   post:
      *     summary: Login a user
      *     description: Authenticates a user and returns a token.
@@ -99,31 +105,6 @@ class AuthRouter {
      *                   type: string
      *                   example: JWT-TOKEN
      */
-    this.router.post('/login', this.loginUser);
-    
-  }
-
-  private registerUser(req: Request, res: Response): void {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return void res.status(400).json({ error: 'Email and password are required' });
-    }
-
-    // Simulación de registro de usuario
-    res.status(201).json({ message: 'User registered successfully' });
-  }
-
-  private loginUser(req: Request, res: Response): void {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return void res.status(400).json({ error: 'Email and password are required' });
-    }
-
-    // Simulación de autenticación
-    res.status(200).json({ token: 'JWT-TOKEN-HERE' });
+    this.router.post('/login', authValidation.LoginRequest, isValid, this._authController.loginUser.bind(this._authController));
   }
 }
-
-export default new AuthRouter().router;

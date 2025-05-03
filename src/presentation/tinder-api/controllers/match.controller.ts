@@ -1,37 +1,24 @@
-import { injectable } from "tsyringe";
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
+import { inject, injectable } from "tsyringe";
+import { TYPES } from "../../../application/dependencyInjection/container.types";
+import { IMatchService } from "../../../application/interfaces/services/match.service.interface";
+import { NotFoundError } from "./base/api.hanldlederror";
+import { sendSuccess } from "./base/success.response.handler";
+import { StatusCodes } from "http-status-codes";
 
 @injectable()
 export class MatchController {
+  constructor(@inject(TYPES.IMatchService) private _matchService: IMatchService) {}
 
-    public getMatches(req: Request, res: Response): void {
-        const { userId } = req.query;
+  public async getMatchHistory(req: Request, res: Response): Promise<void> {
+    const { userId } = req.params;
 
-        if (!userId) {
-            return void res.status(400).json({ error: 'UserId is required' });
-        }
+    const result = await this._matchService.getMatchHistory(BigInt(userId));
 
-        // Simulación de lista de matches
-        const matches = [{ userId: '67890', name: 'Jane Doe' }];
-
-        res.status(200).json({ matches });
+    if (result.isErr()) {
+      throw new NotFoundError(result.error);
     }
 
-    public unmatchUser(req: Request, res: Response): void {
-        const { matchId } = req.params;
-
-        // Simulación de eliminación de un match
-        res.json({ message: `Match ${matchId} removed successfully` });
-    }
-
-    public getChatHistory(req: Request, res: Response): void {
-        const { matchId } = req.params;
-
-        // Simulación de historial de chat
-        const chatHistory = [
-            { messageId: '98765', senderId: '12345', message: 'Hey! How are you?', timestamp: new Date().toISOString() },
-        ];
-
-        res.json(chatHistory);
-    }
+    sendSuccess(res, StatusCodes.OK, { matches: result.value });
+  }
 }
