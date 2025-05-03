@@ -21,7 +21,8 @@ const config: Config = {
 		'!src/**/*.d.ts', 
 		'!src/infrastructure/**', 
 		'!src/presentation/**', 
-		'!src/application/dependencyInjection/**'
+		'!src/application/dependencyInjection/**',
+		'!src/application/interfaces/dtos/**'
 	],
 	testPathIgnorePatterns: ['<rootDir>/dist/'],
 	coverageDirectory: 'coverage',
