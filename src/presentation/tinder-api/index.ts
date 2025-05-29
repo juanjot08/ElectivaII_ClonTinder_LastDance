@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors({
   origin: "*", 
-  credentials: true,
+  credentials: false,
 }));
 
 InfrastructureDependencyInjection.RegisterMongoDb(container, appsettings.mongodb.connection, appsettings.mongodb.databaseName);
