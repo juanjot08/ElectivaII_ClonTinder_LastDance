@@ -84,7 +84,7 @@ class UserController {
 
 	private uploadAdditionalProfilePhotosHandler = multer({ storage: multer.memoryStorage() })
 																								.array('additionalProfilePhotos', appSettings.businessRules.maxAdditionalProfilePhotos);
-
+	
 	public async updateAdditionalProfilePhotos(req: Request, res: Response): Promise<void> {
 		this.uploadAdditionalProfilePhotosHandler(req, res, async (err) => {
 
