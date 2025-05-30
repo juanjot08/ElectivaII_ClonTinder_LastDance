@@ -10,7 +10,7 @@ class AuthMiddleware {
 	constructor(@inject(TYPES.IAuthService) private _authService: IAuthService) { }
 
 	public authenticateSocket(socket: Socket, next: (err?: Error) => void) {
-		const header = socket.handshake.headers.authorization;
+		const header = socket.handshake.auth.token;
 
 		if (!header || !header.startsWith("Bearer ")) {
 			return next(new Error("Access denied. Token not provided."));

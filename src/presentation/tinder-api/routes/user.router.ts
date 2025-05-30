@@ -208,7 +208,7 @@ export class UserRouter {
 
 		/**
 		 * @swagger
-		 * /users/profile/additional-pothos:
+		 * /users/profile/additional-photos:
 		 *   patch:
 		 *     summary: Update additional profile photos
 		 *     description: Updates the additional profile photos of the authenticated user.
@@ -240,7 +240,7 @@ export class UserRouter {
 		 *         description: Internal server error.
 		 */
 		this.router.patch(
-			"/profile/additional-pothos",
+			"/profile/additional-photos",
 			this.authMiddleware.authenticateToken,
 			this.userController.updateAdditionalProfilePhotos.bind(this.userController)
 		)
