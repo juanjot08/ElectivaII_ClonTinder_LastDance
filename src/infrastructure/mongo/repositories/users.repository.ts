@@ -78,6 +78,7 @@ export class UsersRepository implements IUsersRepository {
 				{ "preferences.interestedInGender": user.gender },
 				{ "preferences.minAge": { $lte: user.age } },
 				{ "preferences.maxAge": { $gte: user.age } },
+				{ "location.city": { $eq: user.location?.city } } ,
 			],
 		};
 
