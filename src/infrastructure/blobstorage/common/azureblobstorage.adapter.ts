@@ -26,8 +26,14 @@ export class AzureBlobStorageAdapter {
 	): Promise<Result<{ blobName: string; url: string }, string>> {
 		try {
 
-			const blobName = fileName;			
+			const blobName = fileName;
 			const blockBlobClient = this.getBlockBlobClient(blobName, containerName);
+
+			const blobExists = await blockBlobClient.exists();
+
+			if (blobExists) {
+				await blockBlobClient.delete();
+			}
 
 			const uploadResponse: BlobUploadCommonResponse = await blockBlobClient.uploadData(file.buffer, {
 				blobHTTPHeaders: { blobContentType: file.mimetype },
